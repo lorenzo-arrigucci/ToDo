@@ -1,11 +1,11 @@
 {
   "name": "todo",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open --port 8080",
     "build": "run-p type-check build-only",
-    "preview": "vite preview",
+    "preview": "vite --open --port 8080 preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
