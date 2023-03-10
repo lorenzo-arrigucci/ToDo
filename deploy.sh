@@ -1,5 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-npx kill-port 8080
+# abort on errors
+set -e
 
-npm run preview
+#build
+npm run build
+
+# navigate into the build output directory
+cd dist
+
+# if deploying to a custom domain
+# echo 'www.example.com' > CNAME
+
+git init
+git add -A
+git commit -m 'deploy'
+
+# if deploying to http://<USERNAME>.github.io
+# git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git main
+
+# if deploying to http://<USERNAME>.github.io/<REPO>
+# git push -f git@github.com:<USERNAME>/<REPO>.git main:gh-pages
+git push -f git@github.com:lorenzo-arrigucci/ToDo.git main:gh-pages
+
+cd -
