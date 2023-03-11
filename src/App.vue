@@ -1,24 +1,48 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+      <div class="wrapper">
+          <nav>
+            <RouterLink to="/">Gestione priorità</RouterLink>
+            <RouterLink to="/liste">Liste Complete</RouterLink>
+            <RouterLink to="/info">Info</RouterLink>
+          </nav>
+          <NuovoTodo @aggiungiTodo="inserisciToDo($event)"/>
+      </div>
+      <div class="wrapper mt-2">
+        <p>Da completare: {{ daCompletare }}</p>
+        <p>Completati: {{ completati }}</p>
+        <p>In scadenza oggi: {{ inScadenza }}</p>
+        <p>Con priorità alta: {{ prioritaAlta }}</p>
+      </div>
   </header>
 
-  <RouterView />
+  <RouterView :listaTodo="listaTodo" @ricaricaTodo="caricaToDo()" @elimina="eliminaPerId($event)"/>
 </template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { RouterLink, RouterView } from 'vue-router'
+import NuovoTodo from './components/NuovoTodo.vue';
+import { getAllToDo, aggiungiToDo, eliminaToDo, ToDo, Priorita } from './components/shared/db';
+
+const listaTodo = ref([new ToDo()]);
+const daCompletare = computed(() => listaTodo.value.filter(todo => todo.completato === 0).length);
+const completati = computed(() => listaTodo.value.filter(todo => todo.completato === 1).length);
+const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === 0).length);
+const prioritaAlta = computed(() => listaTodo.value.filter(todo => todo.priorita === Priorita.Alta).length);
+
+const caricaToDo = () => {
+  getAllToDo().then( res => listaTodo.value = res );
+}
+const inserisciToDo = (todo: ToDo) => {
+  aggiungiToDo(todo).then();
+}
+const eliminaPerId = (id: number) => {
+  eliminaToDo(id).then();
+}
+onMounted(() => caricaToDo())
+</script>
 
 <style scoped>
 header {
@@ -35,7 +59,6 @@ nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
 }
 
 nav a.router-link-exact-active {
@@ -59,12 +82,13 @@ nav a:first-of-type {
 @media (min-width: 1024px) {
   header {
     display: flex;
+    flex-direction: column;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
   }
 
   .logo {
-    margin: 0 2rem 0 0;
+    margin: 1rem 2rem 0 0;
   }
 
   header .wrapper {
@@ -79,7 +103,6 @@ nav a:first-of-type {
     font-size: 1rem;
 
     padding: 1rem 0;
-    margin-top: 1rem;
   }
 }
 </style>

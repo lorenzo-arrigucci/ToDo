@@ -1,4 +1,5 @@
 @import './base.css';
+@import './table.scss';
 
 #app {
   max-width: 1280px;
@@ -8,11 +9,28 @@
   font-weight: normal;
 }
 
+.main {
+  min-height: 100vh;
+  display: grid;
+}
+
+.sezione-liste {
+  margin: 1em 0;
+}
+
+form > * {
+  margin: 0em 0.5em 0.5em 0em;
+}
+
 a,
 .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
+}
+
+.bg-green {
+  background-color: hsla(160, 100%, 37%, 1);
 }
 
 @media (hover: hover) {
@@ -30,7 +48,7 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 4fr;
     padding: 0 2rem;
   }
 }
