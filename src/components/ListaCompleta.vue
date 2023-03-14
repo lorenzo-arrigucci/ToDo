@@ -8,15 +8,13 @@
                     <th>Scadenza</th>
                     <th>Giorni rimasti</th>
                     <th>Priorit&agrave;</th>
-                    <th></th>
                 </thead>
                 <tbody>
-                    <tr class="d-table-row" v-for="todo in listaTodoFormattata">
-                        <td class="d-table-cell">{{ todo.descrizione }}</td>
-                        <td class="d-table-cell">{{ todo.scadenza }}</td>
-                        <td class="d-table-cell">{{ todo.giorniRimasti }}</td>
-                        <td class="d-table-cell">{{ todo.priorita }}</td>
-                        <td><!-- Azioni --></td>
+                    <tr v-for="todo in listaTodoFormattata">
+                        <td style="width: 40%;">{{ todo.descrizione }}</td>
+                        <td style="width: 20%;">{{ todo.scadenza }}</td>
+                        <td style="width: 20%;">{{ todo.giorniRimasti }}</td>
+                        <td style="width: 20%;">{{ todo.priorita }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -29,10 +27,12 @@
                     <th></th>
                 </thead>
                 <tbody>
-                    <tr class="d-table-row" v-for="todo in listaTodoFormattata">
-                        <td class="d-table-cell">{{ todo.descrizione }}</td>
-                        <td class="d-table-cell">{{ todo.scadenza }}</td>
-                        <td><button class="btn bg-green" @click="elimina(todo.id || null)">Elimina</button></td>
+                    <tr v-for="todo in listaTodoFormattata">
+                        <td style="width: 40%;">{{ todo.descrizione }}</td>
+                        <td style="width: 50%;">{{ todo.scadenza }}</td>
+                        <td style="width: auto;">
+                            <button class="btn bg-green push-right" @click="emit('elimina', todo.id || null)">Elimina</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -47,6 +47,7 @@
 import moment from 'moment';
 import { computed } from 'vue';
 import type { ToDo } from './shared/db';
+import { ordinaPerGiorniRimasti } from './shared/utils';
 
 const props = defineProps<{    
     title: string,
@@ -57,17 +58,17 @@ const emit = defineEmits<{
 }>();
 
 const lunghezzaLista = computed(() => props.listaTodo.length);
-const listaTodoFormattata = computed(() => {
-    return props.listaTodo.map(todo => {
+const listaTodoFormattata = computed(() => props.listaTodo
+    .sort(ordinaPerGiorniRimasti)
+    .map(todo => {
         todo.scadenza = moment(todo.scadenza).format('DD/MM/YYYY');
         return todo;
     })
-})
-
-const elimina = (id: number | null) => emit('elimina', id);
+);
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../assets/table.scss';
 
 </style>

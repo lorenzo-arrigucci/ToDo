@@ -9,7 +9,7 @@
             <option selected disabled>Seleziona una priorit&agrave;</option>
             <option v-for="priorita in listaPriorita" :value="priorita">{{ priorita }}</option>
         </select>
-        <button class="btn bg-green mt-2" @click="aggiungi">Aggiungi</button>
+        <button class="btn bg-green mt-1" @click="aggiungi">Aggiungi</button>
     </form>
 </template>
 
@@ -28,18 +28,23 @@ class FormInput {
 }
 let formInput: FormInput = new FormInput();
 const listaPriorita: Priorita[] = [ Priorita.Alta, Priorita.Media, Priorita.Bassa ];
+const oggi = new Date();
 
 const aggiungi = () => {
     if (!formInput.descrizione || !formInput.scadenza || !formInput.priorita) return;
+    formInput.scadenza = new Date(formInput.scadenza); // L'orario viene impostato di default alle 01:00:00
+    if (formInput.scadenza.getTime() < new Date().getTime()) {
+        formInput.scadenza = new Date();
+        formInput.scadenza.setHours(1,0,0);
+    }
     const todo = new ToDo();
     todo.descrizione = formInput.descrizione;
     todo.scadenza = formInput.scadenza;
     todo.priorita = formInput.priorita;
     emit('aggiungiTodo', todo);
 };
-
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 @import '../assets/main.css';
 </style>

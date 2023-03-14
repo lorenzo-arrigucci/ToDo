@@ -1,3 +1,13 @@
 .table {
     color: var(--color-text);
+
+    thead > th {
+        padding: 0 0.5rem;
+        font-size: large;
+        vertical-align: top;
+    }
+
+    td {
+        vertical-align: middle;
+    }
 }

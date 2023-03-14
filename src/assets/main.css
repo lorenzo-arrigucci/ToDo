@@ -1,5 +1,4 @@
 @import './base.css';
-@import './table.scss';
 
 #app {
   max-width: 1280px;
@@ -31,6 +30,15 @@ a,
 
 .bg-green {
   background-color: hsla(160, 100%, 37%, 1);
+}
+
+.push-right {
+  margin-left: auto !important;
+}
+
+button.btn {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 @media (hover: hover) {

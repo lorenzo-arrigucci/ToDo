@@ -10,11 +10,13 @@
                     <th></th>
                 </thead>
                 <tbody>
-                    <tr class="d-table-row" v-for="todo in listaTodoFormattata">
-                        <td class="d-table-cell">{{ todo.descrizione }}</td>
-                        <td class="d-table-cell">{{ todo.scadenza }}</td>
-                        <td class="d-table-cell">{{ todo.giorniRimasti }}</td>
-                        <td><!-- Azioni --></td>
+                    <tr v-for="todo in listaTodoFormattata">
+                        <td style="width: 40%;">{{ todo.descrizione }}</td>
+                        <td style="width: 25%;">{{ todo.scadenza }}</td>
+                        <td style="width: 25%;">{{ todo.giorniRimasti }}</td>
+                        <td style="width: auto">
+                            <button class="btn bg-green push-right" @click="emit('completa', todo.id || null)">Completa</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -32,22 +34,29 @@
 import moment from 'moment'
 import { computed } from 'vue';
 import type { ToDo } from './shared/db';
+import { ordinaPerGiorniRimasti } from './shared/utils';
 
 
 const props = defineProps<{
     title: string,
     listaTodo: ToDo[]
 }>();
+const emit = defineEmits<{
+    (e: 'completa', id: number | null): void
+}>();
 
-const lunghezzaLista = computed(() => props.listaTodo.length);
-const listaTodoFormattata = computed(() => {
-    return props.listaTodo.map(todo => {
+const lunghezzaLista = computed(() => props.listaTodo.filter(todo => todo.completato === 0).length);
+const listaTodoFormattata = computed(() => props.listaTodo
+    .sort(ordinaPerGiorniRimasti)
+    .filter(todo => todo.completato === 0)
+    .map(todo => {
         todo.scadenza = moment(todo.scadenza).format('DD/MM/YYYY');
         return todo;
     })
-})
+);
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../assets/table.scss';
 
 </style>

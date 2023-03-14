@@ -17,19 +17,23 @@
       </div>
   </header>
 
-  <RouterView :listaTodo="listaTodo" @ricaricaTodo="caricaToDo()" @elimina="eliminaPerId($event)"/>
+  <RouterView 
+    :listaTodo="listaTodo" 
+    @ricaricaTodo="caricaToDo()" 
+    @elimina="eliminaPerId($event)"
+    @completa="modificaCompletamentoToDo($event, 1)"/>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { RouterLink, RouterView } from 'vue-router'
-import NuovoTodo from './components/NuovoTodo.vue';
-import { getAllToDo, aggiungiToDo, eliminaToDo, ToDo, Priorita } from './components/shared/db';
+import { NuovoTodo } from '@/components/imports';
+import { getAllToDo, aggiungiToDo, eliminaToDo, aggiornaCompletamentoToDo, ToDo, Priorita } from '@/components/shared/db';
 
 const listaTodo = ref([new ToDo()]);
 const daCompletare = computed(() => listaTodo.value.filter(todo => todo.completato === 0).length);
 const completati = computed(() => listaTodo.value.filter(todo => todo.completato === 1).length);
-const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === 0).length);
+const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === '0').length);
 const prioritaAlta = computed(() => listaTodo.value.filter(todo => todo.priorita === Priorita.Alta).length);
 
 const caricaToDo = () => {
@@ -39,12 +43,15 @@ const inserisciToDo = (todo: ToDo) => {
   aggiungiToDo(todo).then();
 }
 const eliminaPerId = (id: number) => {
-  eliminaToDo(id).then();
+  eliminaToDo(id).then(res => caricaToDo());
+}
+const modificaCompletamentoToDo = (id: number, completato: number) => {
+  aggiornaCompletamentoToDo(id, completato).then(res => caricaToDo());
 }
 onMounted(() => caricaToDo())
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 header {
   line-height: 1.5;
   max-height: 100vh;
