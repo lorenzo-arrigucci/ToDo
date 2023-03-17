@@ -1,0 +1,9 @@
+#datePicker {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#datePicker .vc-light.vc-attr, 
+#datePicker .vc-light .vc-attr {
+    --vc-highlight-solid-bg: var(--color-accent-primary);
+}

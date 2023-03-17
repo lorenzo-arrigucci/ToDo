@@ -24,12 +24,12 @@ form > * {
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--color-accent-primary);
   transition: 0.4s;
 }
 
 .bg-green {
-  background-color: hsla(160, 100%, 37%, 1);
+  background-color: var(--color-accent-primary);
 }
 
 .push-right {
@@ -43,8 +43,14 @@ button.btn {
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-    color: hsla(160, 100%, 37%, 1);
+    /* background-color: hsla(160, 100%, 37%, 0.2); */
+    background-color: var(--color-accent-darker);
+    color: var(--color-accent-primary);
+  }
+
+  .bg-green:hover {
+    background-color: var(--color-accent-highlight);
+    color: var(--bs-btn-color);
   }
 }
 

@@ -17,6 +17,7 @@
     "bootstrap": "^5.2.3",
     "dexie": "^3.2.3",
     "moment": "^2.29.4",
+    "v-calendar": "^3.0.1",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },

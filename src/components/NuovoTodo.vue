@@ -1,12 +1,10 @@
 <template>
     <form id="nuovoTodoForm">
-        <label for="descrizione" class="form-label">Descrizione</label>
+        <h3 class="my-3">Aggiungi una scadenza:</h3>
         <input type="text" name="descrizione" class="form-control" v-model="formInput.descrizione" placeholder="Descrizione" required>
-        <label for="scadenza">Data scadenza</label>
-        <input type="date" name="scadenza" class="form-control" v-model="formInput.scadenza" required>
-        <label for="priorita">Priorit&agrave;</label>
+        <DateInput :model="formInput.scadenza" @update="update($event)"/>
         <select name="priorita" class="form-select" v-model="formInput.priorita" required>
-            <option selected disabled>Seleziona una priorit&agrave;</option>
+            <option value="" selected disabled>Seleziona una priorit&agrave;</option>
             <option v-for="priorita in listaPriorita" :value="priorita">{{ priorita }}</option>
         </select>
         <button class="btn bg-green mt-1" @click="aggiungi">Aggiungi</button>
@@ -15,7 +13,8 @@
 
 <script setup lang="ts">
 import { Priorita } from './shared/db';
-import { ToDo } from './shared/db'
+import { ToDo } from './shared/db';
+import { DateInput } from './imports';
 
 const emit = defineEmits<{
     (e: 'aggiungiTodo', todo: ToDo): void
@@ -24,11 +23,13 @@ const emit = defineEmits<{
 class FormInput {
     descrizione: string = '';
     scadenza: Date | null = null;
-    priorita: Priorita | null = null;
+    priorita: Priorita | string = '';
 }
 let formInput: FormInput = new FormInput();
 const listaPriorita: Priorita[] = [ Priorita.Alta, Priorita.Media, Priorita.Bassa ];
 const oggi = new Date();
+
+const update = (data: Date) => formInput.scadenza = data;
 
 const aggiungi = () => {
     if (!formInput.descrizione || !formInput.scadenza || !formInput.priorita) return;
@@ -40,11 +41,10 @@ const aggiungi = () => {
     const todo = new ToDo();
     todo.descrizione = formInput.descrizione;
     todo.scadenza = formInput.scadenza;
-    todo.priorita = formInput.priorita;
+    todo.priorita = typeof formInput.priorita === "string" ? null : formInput.priorita;
     emit('aggiungiTodo', todo);
 };
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/main.css';
 </style>

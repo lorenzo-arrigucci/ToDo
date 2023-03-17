@@ -33,6 +33,11 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
 
+  --color-accent-primary: hsl(160, 100%, 37%);
+  --color-accent-primary-string: #00bd7e;
+  --color-accent-highlight: hsla(160, 100%, 45%, 1);
+  --color-accent-darker: hsl(160, 100%, 15%, 1);
+
   --section-gap: 160px;
 }
 
