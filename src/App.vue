@@ -9,7 +9,7 @@
           </nav>
           <NuovoTodo @aggiungiTodo="inserisciToDo($event)"/>
       </div>
-      <div class="wrapper mt-2">
+      <div class="stats-wrapper mt-2">
         <p>Da completare: {{ daCompletare }}</p>
         <p>Completati: {{ completati }}</p>
         <p>In scadenza oggi: {{ inScadenza }}</p>
@@ -54,7 +54,8 @@ onMounted(() => caricaToDo())
 <style lang="scss" scoped>
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .logo {
@@ -86,12 +87,24 @@ nav a:first-of-type {
   border: 0;
 }
 
+.stats-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  p {
+    white-space: nowrap;
+    margin: 0.5rem 0.5rem;
+  }
+}
+
 @media (min-width: 1024px) {
   header {
     display: flex;
     flex-direction: column;
-    place-items: center;
     padding-right: calc(var(--section-gap) / 2);
+    margin: 0;
   }
 
   .logo {
@@ -100,16 +113,23 @@ nav a:first-of-type {
 
   header .wrapper {
     display: flex;
-    place-items: flex-start;
+    flex-direction: column;
     flex-wrap: wrap;
   }
 
   nav {
+    display: flex;
+    flex-direction: column;
     text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
 
     padding: 1rem 0;
+  }
+
+  .stats-wrapper {
+    flex-direction: column;
+    margin: 0;
   }
 }
 </style>

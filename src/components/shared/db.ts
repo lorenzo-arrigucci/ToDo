@@ -5,6 +5,7 @@ import { calcolaGiorniRimasti } from './utils';
 // Sezione tipi dati
 
 export enum Priorita {
+    Placeholder = "Seleziona la priorità",
     Alta = "Alta",
     Media = "Media",
     Bassa = "Bassa"
