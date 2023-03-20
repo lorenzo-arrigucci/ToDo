@@ -49,11 +49,14 @@ const daCompletare = computed(() => listaTodo.value.filter(todo => todo.completa
 const completati = computed(() => listaTodo.value.filter(todo => todo.completato === 1).length);
 const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === '0').length);
 const prioritaAlta = computed(() => listaTodo.value.filter(todo => todo.priorita === Priorita.Alta).length);
-const todosCollectionRef = collection(db, "todos");
 const user = ref(auth.currentUser);
 
 const caricaToDo = () => {
-  onSnapshot(todosCollectionRef, (querySnapshot) => {
+  if (!user.value) {
+    listaTodo.value = [];
+    return;
+  };
+  onSnapshot(collection(db, `users/${user.value.uid}/todos`), (querySnapshot) => {
     const fbTodos: ToDo[] = [];
     querySnapshot.forEach((doc) => {
       const todo: ToDo = {
@@ -71,7 +74,8 @@ const caricaToDo = () => {
 };
 
 const inserisciToDo = (todo: ToDo) => {
-  addDoc(todosCollectionRef, {
+  if (!user.value) return;
+  addDoc(collection(db, `users/${user.value.uid}/todos`), {
     descrizione: todo.descrizione,
     scadenza: todo.scadenza,
     priorita: todo.priorita,
@@ -79,15 +83,17 @@ const inserisciToDo = (todo: ToDo) => {
   });
 }
 
-const modificaCompletamentoToDo = (id: string, completato: 0 | 1) => {
-  const toDoRef = doc(todosCollectionRef, id);
+const modificaCompletamentoToDo = (id: string, nuovoCompletato: 0 | 1) => {
+  if (!user.value) return;
+  const toDoRef = doc(collection(db, `users/${user.value.uid}/todos`), id);
   updateDoc(toDoRef, {
-    completato: completato
+    completato: nuovoCompletato
   });
 }
 
 const eliminaToDo = (id: string) => {
-  deleteDoc(doc(todosCollectionRef, id));
+  if (!user.value) return;
+  deleteDoc(doc(collection(db, `users/${user.value.uid}/todos`), id));
 }
 
 const logout = () => {
@@ -96,10 +102,11 @@ const logout = () => {
 
 const updateUser = (utente: User | null) => {
   user.value = utente;
+  caricaToDo();
 }
 
 onMounted(() => {
-  onAuthStateChanged(auth, res => updateUser(res))
+  onAuthStateChanged(auth, res => updateUser(res));
   caricaToDo();
 });
 

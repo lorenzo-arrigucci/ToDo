@@ -1,5 +1,5 @@
 <template>
-    <form id="nuovoTodoForm">
+    <form id="nuovoTodoForm" @submit="aggiungi">
         <h3 class="my-3">Aggiungi una scadenza:</h3>
         <input type="text" name="descrizione" class="form-control" v-model="formInput.descrizione" placeholder="Descrizione" autocomplete="off" required>
         <DateInput @update="update($event)"/>
@@ -7,7 +7,7 @@
             <option :value="Priorita.Placeholder" selected disabled>{{ Priorita.Placeholder }}</option>
             <option v-for="priorita in listaPriorita" :value="priorita">{{ priorita }}</option>
         </select>
-        <button class="btn bg-green mt-1" @click.prevent="aggiungi">Aggiungi</button>
+        <button class="btn bg-green mt-1">Aggiungi</button>
     </form>
 </template>
 

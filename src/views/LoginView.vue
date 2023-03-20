@@ -1,7 +1,10 @@
 <template>
     <form @submit.prevent="login">
-        <h2>Per accedere all'app è necessario eseguire il login.</h2>
-        <button class="btn bg-green">Login con Google</button>
+        <h2><strong>Benvenuto in Mini - Gestione scadenze</strong></h2>
+        <h4>Qui potrai gestire le tue scadenze lavorative in modo efficiente</h4>
+        <br>
+        <p>Per accedere all'app è necessario eseguire il login.</p>
+        <button class="btn bg-green">Login con account Google</button>
     </form>
 </template>
 
@@ -26,6 +29,7 @@ form {
 }
 h2 {
     text-align:center;
+    color: var(--color-accent-primary);
 }
 button {
     width:fit-content;
