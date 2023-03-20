@@ -1,37 +1,48 @@
 <template>
-  <header>
-      <img alt="Logo Mini" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-      <div class="wrapper">
-          <nav>
-            <RouterLink to="/">Gestione priorità</RouterLink>
-            <RouterLink to="/liste">Liste Complete</RouterLink>
-            <RouterLink to="/info">Info</RouterLink>
-          </nav>
-          <NuovoTodo @aggiungiTodo="inserisciToDo($event)"/>
-      </div>
-      <div class="stats-wrapper mt-2">
-        <p>Da completare: {{ daCompletare }}</p>
-        <p>Completati: {{ completati }}</p>
-        <p>In scadenza oggi: {{ inScadenza }}</p>
-        <p>Con priorità alta: {{ prioritaAlta }}</p>
-      </div>
-  </header>
+  <template v-if="!user">
+    <LoginView />
+  </template>
+  <template v-else>
+    <div class="logout">
+      <button class="btn btn-secondary" @click.prevent="logout()">Logout</button>
+    </div>
+    <header>
+        <img alt="Logo Mini" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+        <div class="wrapper">
+            <nav>
+              <RouterLink to="/">Gestione priorità</RouterLink>
+              <RouterLink to="/liste">Liste Complete</RouterLink>
+              <RouterLink to="/info">Info</RouterLink>
+            </nav>
+            <NuovoTodo @aggiungiTodo="inserisciToDo($event)"/>
+        </div>
+        <div class="stats-wrapper mt-2">
+          <p>Da completare: {{ daCompletare }}</p>
+          <p>Completati: {{ completati }}</p>
+          <p>In scadenza oggi: {{ inScadenza }}</p>
+          <p>Con priorità alta: {{ prioritaAlta }}</p>
+        </div>
+    </header>
 
-  <RouterView 
-    :listaTodo="listaTodo" 
-    @ricaricaTodo="caricaToDo()" 
-    @elimina="eliminaToDo($event)"
-    @completa="modificaCompletamentoToDo($event, 1)"/>
+    <RouterView 
+      :listaTodo="listaTodo" 
+      @ricaricaTodo="caricaToDo()" 
+      @elimina="eliminaToDo($event)"
+      @completa="modificaCompletamentoToDo($event, 1)"
+    />
+  </template>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
+import LoginView from './views/LoginView.vue';
 import { NuovoTodo } from '@/components/imports';
 import { ToDo, Priorita } from '@/components/shared/models';
-import { db } from '@/components/shared/firebaseDb';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { calcolaGiorniRimasti } from './components/shared/utils';
+import { db, auth } from '@/components/shared/firebaseDb';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut, type User } from '@firebase/auth';
 
 const listaTodo = ref([new ToDo()]);
 const daCompletare = computed(() => listaTodo.value.filter(todo => todo.completato === 0).length);
@@ -39,6 +50,7 @@ const completati = computed(() => listaTodo.value.filter(todo => todo.completato
 const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === '0').length);
 const prioritaAlta = computed(() => listaTodo.value.filter(todo => todo.priorita === Priorita.Alta).length);
 const todosCollectionRef = collection(db, "todos");
+const user = ref(auth.currentUser);
 
 const caricaToDo = () => {
   onSnapshot(todosCollectionRef, (querySnapshot) => {
@@ -78,11 +90,33 @@ const eliminaToDo = (id: string) => {
   deleteDoc(doc(todosCollectionRef, id));
 }
 
-onMounted(() => caricaToDo());
+const logout = () => {
+  signOut(auth);
+};
+
+const updateUser = (utente: User | null) => {
+  user.value = utente;
+}
+
+onMounted(() => {
+  onAuthStateChanged(auth, res => updateUser(res))
+  caricaToDo();
+});
 
 </script>
 
 <style lang="scss" scoped>
+.logout {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 10;
+}
+
+.logout button {
+  pointer-events: all;
+}
+
 header {
   line-height: 1.5;
   max-width: 700px;
