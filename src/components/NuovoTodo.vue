@@ -7,24 +7,18 @@
             <option :value="Priorita.Placeholder" selected disabled>{{ Priorita.Placeholder }}</option>
             <option v-for="priorita in listaPriorita" :value="priorita">{{ priorita }}</option>
         </select>
-        <button class="btn bg-green mt-1" @click="aggiungi">Aggiungi</button>
+        <button class="btn bg-green mt-1" @click.prevent="aggiungi">Aggiungi</button>
     </form>
 </template>
 
 <script setup lang="ts">
-import { Priorita } from './shared/db';
-import { ToDo } from './shared/db';
+import { Priorita } from './shared/models';
+import { ToDo, FormInput } from './shared/models';
 import { DateInput } from './imports';
 
 const emit = defineEmits<{
     (e: 'aggiungiTodo', todo: ToDo): void
 }>();
-
-class FormInput {
-    descrizione: string = '';
-    scadenza: Date | null = null;
-    priorita: Priorita = Priorita.Placeholder;
-}
 
 const oggi = new Date();
 let formInput: FormInput = new FormInput();
@@ -47,6 +41,7 @@ const aggiungi = () => {
     todo.scadenza = formInput.scadenza;
     todo.priorita = formInput.priorita;
     emit('aggiungiTodo', todo);
+    formInput = new FormInput();
 };
 </script>
 

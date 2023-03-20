@@ -44,9 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
 import { computed } from 'vue';
-import type { ToDo } from './shared/db';
+import type { ToDo } from './shared/models';
 import { ordinaPerGiorniRimasti } from './shared/utils';
 
 const props = defineProps<{    
@@ -54,14 +53,16 @@ const props = defineProps<{
     listaTodo: ToDo[]
 }>();
 const emit = defineEmits<{
-    (e: 'elimina', id: number | null): void
+    (e: 'elimina', id: string | null): void
 }>();
 
 const lunghezzaLista = computed(() => props.listaTodo.length);
 const listaTodoFormattata = computed(() => props.listaTodo
     .sort(ordinaPerGiorniRimasti)
     .map(todo => {
-        todo.scadenza = moment(todo.scadenza).format('DD/MM/YYYY');
+        if (!todo.scadenza) return todo;
+        if (typeof todo.scadenza === "string") todo.scadenza = new Date(todo.scadenza);
+        todo.scadenza = todo.scadenza.toLocaleDateString();
         return todo;
     })
 );

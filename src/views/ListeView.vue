@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { ListaCompleta } from '@/components/imports';
-import type { ToDo } from '@/components/shared/db';
+import type { ToDo } from '@/components/shared/models';
 import { computed } from '@vue/reactivity';
 import { onMounted } from 'vue';
 

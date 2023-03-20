@@ -20,7 +20,7 @@
   <RouterView 
     :listaTodo="listaTodo" 
     @ricaricaTodo="caricaToDo()" 
-    @elimina="eliminaPerId($event)"
+    @elimina="eliminaToDo($event)"
     @completa="modificaCompletamentoToDo($event, 1)"/>
 </template>
 
@@ -28,27 +28,58 @@
 import { ref, computed, onMounted } from 'vue';
 import { RouterLink, RouterView } from 'vue-router'
 import { NuovoTodo } from '@/components/imports';
-import { getAllToDo, aggiungiToDo, eliminaToDo, aggiornaCompletamentoToDo, ToDo, Priorita } from '@/components/shared/db';
+import { ToDo, Priorita } from '@/components/shared/models';
+import { db } from '@/components/shared/firebaseDb';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { calcolaGiorniRimasti } from './components/shared/utils';
 
 const listaTodo = ref([new ToDo()]);
 const daCompletare = computed(() => listaTodo.value.filter(todo => todo.completato === 0).length);
 const completati = computed(() => listaTodo.value.filter(todo => todo.completato === 1).length);
 const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === '0').length);
 const prioritaAlta = computed(() => listaTodo.value.filter(todo => todo.priorita === Priorita.Alta).length);
+const todosCollectionRef = collection(db, "todos");
 
 const caricaToDo = () => {
-  getAllToDo().then( res => listaTodo.value = res );
-}
+  onSnapshot(todosCollectionRef, (querySnapshot) => {
+    const fbTodos: ToDo[] = [];
+    querySnapshot.forEach((doc) => {
+      const todo: ToDo = {
+        id: doc.id,
+        descrizione: doc.data().descrizione,
+        scadenza: new Date(doc.data().scadenza.seconds * 1000),
+        giorniRimasti: calcolaGiorniRimasti(new Date(doc.data().scadenza.seconds * 1000)),
+        priorita: doc.data().priorita,
+        completato: doc.data().completato
+      }
+      fbTodos.push(todo);
+    });
+    listaTodo.value = fbTodos;
+  });
+};
+
 const inserisciToDo = (todo: ToDo) => {
-  aggiungiToDo(todo).then();
+  addDoc(todosCollectionRef, {
+    descrizione: todo.descrizione,
+    scadenza: todo.scadenza,
+    priorita: todo.priorita,
+    completato: todo.completato
+  });
 }
-const eliminaPerId = (id: number) => {
-  eliminaToDo(id).then(res => caricaToDo());
+
+const modificaCompletamentoToDo = (id: string, completato: 0 | 1) => {
+  const toDoRef = doc(todosCollectionRef, id);
+  updateDoc(toDoRef, {
+    completato: completato
+  });
 }
-const modificaCompletamentoToDo = (id: number, completato: number) => {
-  aggiornaCompletamentoToDo(id, completato).then(res => caricaToDo());
+
+const eliminaToDo = (id: string) => {
+  deleteDoc(doc(todosCollectionRef, id));
 }
-onMounted(() => caricaToDo())
+
+onMounted(() => caricaToDo());
+
 </script>
 
 <style lang="scss" scoped>

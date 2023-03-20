@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { ToDo, Priorita } from '@/components/shared/db';
+import { ToDo, Priorita } from '@/components/shared/models';
 import { ListaPrioritaria } from '@/components/imports';
 import { computed, onMounted } from 'vue';
 

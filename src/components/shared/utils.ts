@@ -1,4 +1,4 @@
-import type { ToDo } from './db';
+import type { ToDo } from './models';
 import { CONSTANTS } from './constants';
 /**
  * Calcola i giorni rimasti confrontando 
