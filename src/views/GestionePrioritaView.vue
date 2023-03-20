@@ -16,7 +16,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
     (e: 'ricaricaTodo'): void,
-    (e: 'completa', id: number | null): void
+    (e: 'completa', id: string | null): void
 }>();
 
 const todoPrioritaAlta = computed(() => props.listaTodo.filter(todo => todo.priorita === Priorita.Alta));

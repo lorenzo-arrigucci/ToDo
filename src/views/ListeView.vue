@@ -16,12 +16,12 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
     (e: 'ricaricaTodo'): void,
-    (e: 'elimina', id: number | null): void
+    (e: 'elimina', id: string | null): void
 }>();
 
 const todoAperti = computed(() => props.listaTodo.filter(todo => todo.completato === 0));
 const todoCompletati = computed(() => props.listaTodo.filter(todo => todo.completato === 1));
-const elimina = (id: number | null) => emit('elimina', id);
+const elimina = (id: string | null) => emit('elimina', id);
 
 onMounted(() => emit('ricaricaTodo'))
 </script>
