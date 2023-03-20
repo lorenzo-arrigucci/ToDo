@@ -19,19 +19,25 @@ import { DatePicker } from 'v-calendar';
 import '../assets/datePicker.css';
 import 'v-calendar/style.css';
 
+const props = withDefaults(defineProps<{
+    minDate?: Date,
+    required?: boolean,
+    reset?: boolean
+}>(), {
+    minDate: () => new Date(),
+    required: true,
+    reset: false
+});
+
 const date = ref(new Date());
 
 watch(date, (selection, previus) => {
     emit('update', selection);
 })
 
-withDefaults(defineProps<{
-    minDate?: Date,
-    required?: boolean
-}>(), {
-    minDate: () => new Date(),
-    required: true
-});
+watch(props, value => {
+    if (value.reset) date.value = new Date();
+})
 
 const emit = defineEmits<{
     (e: 'update', value: Date): void
