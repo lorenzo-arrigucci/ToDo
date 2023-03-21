@@ -41,7 +41,7 @@ import { NuovoTodo } from '@/components/imports';
 import { ToDo, Priorita } from '@/components/shared/models';
 import { calcolaGiorniRimasti } from './components/shared/utils';
 import { db, auth } from '@/components/shared/firebaseDb';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc, type Unsubscribe } from 'firebase/firestore';
 import { onAuthStateChanged, signOut, type User } from '@firebase/auth';
 
 const listaTodo = ref([new ToDo()]);
@@ -50,13 +50,14 @@ const completati = computed(() => listaTodo.value.filter(todo => todo.completato
 const inScadenza = computed(() => listaTodo.value.filter(todo => todo.giorniRimasti === '0').length);
 const prioritaAlta = computed(() => listaTodo.value.filter(todo => todo.priorita === Priorita.Alta).length);
 const user = ref(auth.currentUser);
+let unsubscribeCollection: Unsubscribe | null = null;
 
 const caricaToDo = () => {
   if (!user.value) {
     listaTodo.value = [];
     return;
   };
-  onSnapshot(collection(db, `users/${user.value.uid}/todos`), (querySnapshot) => {
+  unsubscribeCollection = onSnapshot(collection(db, `users/${user.value.uid}/todos`), (querySnapshot) => {
     const fbTodos: ToDo[] = [];
     querySnapshot.forEach((doc) => {
       const todo: ToDo = {
@@ -97,6 +98,7 @@ const eliminaToDo = (id: string) => {
 }
 
 const logout = () => {
+  if (unsubscribeCollection) unsubscribeCollection();
   signOut(auth);
 };
 
