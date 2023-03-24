@@ -1,6 +1,6 @@
 <template>
     <div class="sezione-liste">
-        <h2 class="text-center">{{ title }}</h2>
+        <h2>{{ title }}</h2>
         <template v-if="lunghezzaLista > 0 && title === 'Da fare'">
             <table class="table">
                 <thead>
@@ -38,7 +38,7 @@
             </table>
         </template>
         <template v-else>
-            <p class="text-center">Al momento non sono presenti promemoria {{ title === 'Completati' ? 'completati' : 'da completare' }} registrati.</p>
+            <p>Al momento non sono presenti promemoria {{ title === 'Completati' ? 'completati' : 'da completare' }} registrati.</p>
         </template>
     </div>
 </template>

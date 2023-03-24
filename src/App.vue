@@ -144,7 +144,7 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: var(--color-accent-primary);
 }
 
 nav a.router-link-exact-active:hover {
@@ -155,6 +155,7 @@ nav a {
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 nav a:first-of-type {
@@ -165,11 +166,11 @@ nav a:first-of-type {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  column-gap: 1rem;
+  justify-content: space-between;
 
   p {
     white-space: nowrap;
-    margin: 0.5rem 0.5rem;
   }
 }
 

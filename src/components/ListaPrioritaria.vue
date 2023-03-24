@@ -1,6 +1,6 @@
 <template>
     <div class="sezione-liste">
-        <h2 class="text-center">{{ title }}</h2>
+        <h2>{{ title }}</h2>
         <template v-if="lunghezzaLista > 0">
             <table class="table">
                 <thead>
@@ -22,7 +22,7 @@
             </table>
         </template>
         <template v-else>
-            <p class="text-center">
+            <p>
                 Al momento non sono presenti scadenze con priorit&agrave; 
                 {{ title.includes('Alta') ? 'alta' : title.includes('Media') ? 'media' : 'bassa' }}.
             </p>
